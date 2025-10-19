@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alba VOTE - App Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/phosphor-icons/1.4.2/css/phosphor.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+        }
+        .evaluation-select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.5rem center;
+            background-size: 1.2em;
+            padding-right: 2rem;
+        }
+        button:disabled {
+            background-color: #94a3b8; /* slate-400 */
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="bg-slate-200 flex justify-center items-center min-h-screen p-4">
+
+    <!-- スマホ画面のフレーム -->
+    <div class="w-full max-w-sm h-[800px] bg-slate-50 rounded-3xl shadow-2xl overflow-hidden flex flex-col border-4 border-slate-800">
+
+        <!-- アプリのメインコンテナ -->
+        <div id="app-container" class="flex-grow relative">
+            
+            <!-- ====== ログイン画面 ====== -->
+            <div id="login-screen" class="absolute inset-0 flex flex-col bg-slate-50 p-8 justify-center items-center">
+                <div class="text-center mb-10">
+                    <div class="w-20 h-20 mx-auto">
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <defs><radialGradient id="gradL"><stop offset="50%" stop-color="#fff" /><stop offset="100%" stop-color="#e0f2fe" /></radialGradient></defs>
+                            <circle cx="50" cy="50" r="48" fill="url(#gradL)" opacity="0.6"/><circle cx="50" cy="50" r="35" fill="url(#gradL)" opacity="0.8"/>
+                            <circle cx="20" cy="40" r="5" fill="#fbbf24"/><circle cx="75" cy="28" r="5" fill="#fbbf24"/><circle cx="80" cy="65" r="5" fill="#fbbf24"/>
+                            <g><circle cx="50" cy="50" r="18" fill="#0369a1"/><path d="M50 68 C 38 68, 38 90, 50 90 C 62 90, 62 68, 50 68 Z" fill="#0369a1"/><circle cx="50" cy="45" r="8" fill="white"/></g>
+                        </svg>
+                    </div>
+                    <h1 class="text-3xl font-bold text-slate-800 mt-4">Alba VOTE</h1>
+                    <p class="text-slate-500 mt-1">信頼がキャリアを拓く</p>
+                </div>
+
+                <div class="w-full space-y-4">
+                    <div>
+                        <label for="email" class="text-sm font-medium text-slate-600">メールアドレス</label>
+                        <input type="email" id="email" class="mt-1 w-full p-3 border border-slate-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500" placeholder="email@example.com">
+                    </div>
+                    <div>
+                        <label for="password" class="text-sm font-medium text-slate-600">パスワード</label>
+                        <input type="password" id="password" class="mt-1 w-full p-3 border border-slate-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500" placeholder="••••••••">
+                    </div>
+                </div>
+
+                <div class="w-full mt-8">
+                    <button id="login-button" class="w-full bg-sky-500 text-white font-bold py-3 rounded-md hover:bg-sky-600 transition-colors text-lg">
+                        ログイン
+                    </button>
+                    <p class="text-center text-xs text-slate-500 mt-4">
+                        <a href="#" class="font-medium text-sky-600 hover:underline">パスワードをお忘れですか？</a>
+                    </p>
+                </div>
+
+                <div class="mt-auto pt-8">
+                    <p class="text-center text-sm text-slate-500">
+                        アカウントをお持ちでないですか？ 
+                        <a href="#" class="font-bold text-sky-600 hover:underline">新規登録</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- ====== ホーム画面 ====== -->
+            <div id="home-screen" class="absolute inset-0 flex flex-col hidden">
+                <div class="flex-shrink-0">
+                    <header class="bg-white/80 backdrop-blur-sm p-4 flex justify-between items-center border-b border-slate-200">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8">
+                                 <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                    <defs><radialGradient id="gradH"><stop offset="50%" stop-color="#fff" /><stop offset="100%" stop-color="#e0f2fe" /></radialGradient></defs>
+                                    <circle cx="50" cy="50" r="45" fill="url(#gradH)" opacity="0.6"/><circle cx="50" cy="50" r="30" fill="url(#gradH)" opacity="0.8"/>
+                                    <circle cx="20" cy="40" r="4" fill="#fbbf24"/><circle cx="75" cy="28" r="4" fill="#fbbf24"/><circle cx="80" cy="65" r="4" fill="#fbbf24"/>
+                                    <g><circle cx="50" cy="50" r="15" fill="#0369a1"/><path d="M50 65 C 40 65, 40 85, 50 85 C 60 85, 60 65, 50 65 Z" fill="#0369a1"/><circle cx="50" cy="42" r="7" fill="white"/></g>
+                                </svg>
+                            </div>
+                            <h1 class="text-xl font-bold text-slate-800">Alba VOTE</h1>
+                        </div>
+                        <i class="ph-bell text-2xl text-slate-500"></i>
+                    </header>
+                     <div class="bg-white p-2 text-center border-b border-slate-200">
+                        <p class="text-sm text-slate-600">現在の所属： <span class="font-bold">カフェ・ド・スマイル 渋谷店</span></p>
+                    </div>
+                </div>
+
+                <main class="flex-grow overflow-y-auto p-4 space-y-6">
+                    <section class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                        <h2 class="font-bold text-slate-700 mb-3">感謝を伝える</h2>
+                        <div class="space-y-3">
+                            <select class="w-full p-2 border border-slate-300 rounded-md bg-slate-50 focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
+                                <option>誰に送りますか？</option>
+                                <option>田中 圭さん</option>
+                                <option>佐藤 美咲さん</option>
+                            </select>
+                            <textarea placeholder="どんな貢献でしたか？（任意）" class="w-full p-2 border border-slate-300 rounded-md h-20 bg-slate-50 focus:ring-2 focus:ring-sky-500 focus:border-sky-500"></textarea>
+                            <div class="pt-1">
+                                <p class="text-sm font-medium text-slate-600 mb-2">どの点を評価しますか？</p>
+                                <div id="evaluation-criteria" class="space-y-4">
+                                    <!-- Item 1: 責任感 -->
+                                    <div class="evaluation-item bg-slate-50/50 p-3 rounded-lg border">
+                                        <div class="flex justify-between items-center">
+                                            <h4 class="font-bold text-slate-700 text-sm">#責任感</h4>
+                                            <div class="flex items-center gap-2">
+                                                <select class="evaluation-select text-sm font-semibold p-1 border border-slate-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
+                                                    <option value="0">レベルを選択</option>
+                                                    <option value="1" data-tokens="1">Lv.1</option>
+                                                    <option value="2" data-tokens="2">Lv.2</option>
+                                                    <option value="3" data-tokens="3">Lv.3</option>
+                                                </select>
+                                                <i class="ph-info text-xl text-slate-400 cursor-pointer info-icon"></i>
+                                            </div>
+                                        </div>
+                                        <div class="criterion-details hidden mt-2 pt-2 border-t border-slate-200 text-xs text-slate-600 space-y-1">
+                                            <p><strong>定義:</strong> 与えられた役割や仕事を、最後までやり遂げようとする姿勢。</p>
+                                            <ul class="list-disc list-inside text-slate-500">
+                                                <li><strong>Lv.1 (基本的):</strong> 指示された業務・役割を完遂する。</li>
+                                                <li><strong>Lv.2 (自律的):</strong> 予期せぬ問題にも適切に対応する。</li>
+                                                <li><strong>Lv.3 (模範的):</strong> チーム全体の成果に責任を持つ。</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <!-- Item 2: 協調性 -->
+                                    <div class="evaluation-item bg-slate-50/50 p-3 rounded-lg border">
+                                        <div class="flex justify-between items-center">
+                                            <h4 class="font-bold text-slate-700 text-sm">#協調性</h4>
+                                            <div class="flex items-center gap-2">
+                                                 <select class="evaluation-select text-sm font-semibold p-1 border border-slate-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
+                                                    <option value="0">レベルを選択</option>
+                                                    <option value="1" data-tokens="1">Lv.1</option>
+                                                    <option value="2" data-tokens="2">Lv.2</option>
+                                                    <option value="3" data-tokens="3">Lv.3</option>
+                                                </select>
+                                                <i class="ph-info text-xl text-slate-400 cursor-pointer info-icon"></i>
+                                            </div>
+                                        </div>
+                                         <div class="criterion-details hidden mt-2 pt-2 border-t border-slate-200 text-xs text-slate-600 space-y-1">
+                                            <p><strong>定義:</strong> チームの一員として、周囲のメンバーと協力し、目標達成に貢献しようとする姿勢。</p>
+                                             <ul class="list-disc list-inside text-slate-500">
+                                                <li><strong>Lv.1 (基本的):</strong> チームのルールを守り、円滑な連携を行う。</li>
+                                                <li><strong>Lv.2 (自律的):</strong> 周囲の状況を察知し、自発的に支援する。</li>
+                                                <li><strong>Lv.3 (模範的):</strong> チームの雰囲気を良くする働きかけをする。</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <!-- Item 3: 主体性 -->
+                                    <div class="evaluation-item bg-slate-50/50 p-3 rounded-lg border">
+                                        <div class="flex justify-between items-center">
+                                            <h4 class="font-bold text-slate-700 text-sm">#主体性</h4>
+                                            <div class="flex items-center gap-2">
+                                                 <select class="evaluation-select text-sm font-semibold p-1 border border-slate-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
+                                                    <option value="0">レベルを選択</option>
+                                                    <option value="1" data-tokens="1">Lv.1</option>
+                                                    <option value="2" data-tokens="2">Lv.2</option>
+                                                    <option value="3" data-tokens="3">Lv.3</option>
+                                                </select>
+                                                <i class="ph-info text-xl text-slate-400 cursor-pointer info-icon"></i>
+                                            </div>
+                                        </div>
+                                        <div class="criterion-details hidden mt-2 pt-2 border-t border-slate-200 text-xs text-slate-600 space-y-1">
+                                            <p><strong>定義:</strong> 指示を待つだけでなく、自ら課題を見つけ、より良くするための改善行動や提案をしようとする姿勢。</p>
+                                             <ul class="list-disc list-inside text-slate-500">
+                                                <li><strong>Lv.1 (基本的):</strong> 指示されたこと以上の仕事を見つけて行う。</li>
+                                                <li><strong>Lv.2 (自律的):</strong> 常に「もっと良くするには」を考え、行動する。</li>
+                                                <li><strong>Lv.3 (模範的):</strong> 新たな価値や仕組みを提案し、実行する。</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <!-- Item 4: コミュニケーション -->
+                                    <div class="evaluation-item bg-slate-50/50 p-3 rounded-lg border">
+                                        <div class="flex justify-between items-center">
+                                            <h4 class="font-bold text-slate-700 text-sm">#コミュニケーション</h4>
+                                            <div class="flex items-center gap-2">
+                                                 <select class="evaluation-select text-sm font-semibold p-1 border border-slate-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
+                                                    <option value="0">レベルを選択</option>
+                                                    <option value="1" data-tokens="1">Lv.1</option>
+                                                    <option value="2" data-tokens="2">Lv.2</option>
+                                                    <option value="3" data-tokens="3">Lv.3</option>
+                                                </select>
+                                                <i class="ph-info text-xl text-slate-400 cursor-pointer info-icon"></i>
+                                            </div>
+                                        </div>
+                                        <div class="criterion-details hidden mt-2 pt-2 border-t border-slate-200 text-xs text-slate-600 space-y-1">
+                                            <p><strong>定義:</strong> 相手の意図を正確に理解し、自分の考えや情報を分かりやすく伝え、円滑な人間関係を築く能力。</p>
+                                            <ul class="list-disc list-inside text-slate-500">
+                                                <li><strong>Lv.1 (基本的):</strong> 明るい挨拶と丁寧な言葉遣いができる。</li>
+                                                <li><strong>Lv.2 (自律的):</strong> チームに必要な「報・連・相」を徹底できる。</li>
+                                                <li><strong>Lv.3 (模範的):</strong> 相手の立場や状況に合わせた伝え方ができる。</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                     <!-- Item 5: 向上心 -->
+                                    <div class="evaluation-item bg-slate-50/50 p-3 rounded-lg border">
+                                        <div class="flex justify-between items-center">
+                                            <h4 class="font-bold text-slate-700 text-sm">#向上心</h4>
+                                            <div class="flex items-center gap-2">
+                                                 <select class="evaluation-select text-sm font-semibold p-1 border border-slate-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
+                                                    <option value="0">レベルを選択</option>
+                                                    <option value="1" data-tokens="1">Lv.1</option>
+                                                    <option value="2" data-tokens="2">Lv.2</option>
+                                                    <option value="3" data-tokens="3">Lv.3</option>
+                                                </select>
+                                                <i class="ph-info text-xl text-slate-400 cursor-pointer info-icon"></i>
+                                            </div>
+                                        </div>
+                                        <div class="criterion-details hidden mt-2 pt-2 border-t border-slate-200 text-xs text-slate-600 space-y-1">
+                                            <p><strong>定義:</strong> 現状に満足せず、常に新しい知識やスキルを吸収し、自身の成長や能力向上に意欲的に取り組む姿勢。</p>
+                                            <ul class="list-disc list-inside text-slate-500">
+                                                <li><strong>Lv.1 (基本的):</strong> 新しい業務を意欲的に覚えようとする。</li>
+                                                <li><strong>Lv.2 (自律的):</strong> 失敗から学び、次に活かすことができる。</li>
+                                                <li><strong>Lv.3 (模範的):</strong> 自分の学びをチームに還元する。</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button id="send-token-button" class="w-full bg-sky-500 text-white font-bold py-2.5 rounded-md hover:bg-sky-600 transition-colors mt-2">
+                                評価項目を選択してください
+                            </button>
+                        </div>
+                    </section>
+                     <section>
+                        <h2 class="font-bold text-slate-700 mb-3">最近のTHANKS</h2>
+                        <div class="space-y-4">
+                            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 relative">
+                                <div class="absolute top-3 right-3 text-sm font-bold text-amber-600 bg-amber-100 px-2.5 py-1 rounded-full">
+                                    +5 pt
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <img src="https://placehold.co/40x40/FFC107/FFFFFF?text=店長" class="w-10 h-10 rounded-full" alt="店長アバター">
+                                    <div class="pr-12">
+                                        <p class="text-sm text-slate-500">from <span class="font-bold text-slate-700">中村店長</span></p>
+                                        <p class="text-slate-800 my-1.5">新人さんへの丁寧な指導、本当に助かりました！</p>
+                                        <div class="flex items-center gap-2 flex-wrap">
+                                            <span class="text-xs font-semibold text-sky-800 bg-sky-100 px-2 py-0.5 rounded-full">#コミュニケーション: Lv.3</span>
+                                            <span class="text-xs font-semibold text-rose-800 bg-rose-100 px-2 py-0.5 rounded-full">#協調性: Lv.2</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="text-right text-xs text-slate-400 mt-2">2時間前</p>
+                            </div>
+                        </div>
+                    </section>
+                </main>
+            </div>
+
+            <!-- ====== 実績証明画面 ====== -->
+            <div id="proof-screen" class="absolute inset-0 flex flex-col hidden">
+                 <header class="flex-shrink-0 bg-white/80 backdrop-blur-sm p-4 flex justify-between items-center border-b border-slate-200">
+                    <h1 class="text-xl font-bold text-slate-800">実績証明</h1>
+                    <i class="ph-share-network text-2xl text-slate-500"></i>
+                </header>
+                <main class="flex-grow overflow-y-auto p-4 space-y-6">
+                    <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 text-center">
+                        <img src="https://placehold.co/80x80/0369a1/FFFFFF?text=私" class="w-20 h-20 rounded-full mx-auto mb-3 border-4 border-white shadow-md" alt="自分のアバター">
+                        <h2 class="text-2xl font-bold text-slate-800">山田 太郎</h2>
+                        <div class="mt-4 bg-sky-50 border-2 border-sky-200 rounded-lg p-3">
+                            <p class="text-sm font-bold text-sky-800">総合信頼スコア</p>
+                            <p class="text-4xl font-bold text-sky-600">425</p>
+                        </div>
+                    </section>
+                     <section class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-slate-700 mb-2 text-center">評価ポートフォリオ</h3>
+                        <div class="w-full h-64"><canvas id="radarChart"></canvas></div>
+                    </section>
+                    <section class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-slate-700 mb-2 text-center">実績を共有・証明する</h3>
+                        <div class="flex justify-center">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=AlbaVOTE-Proof-YamadaTaro-BlockchainRecord12345" class="rounded-lg" alt="実績証明QRコード">
+                        </div>
+                         <p class="text-xs text-slate-500 mt-2 text-center">応募先の担当者にこのQRコードを提示してください。<br>この実績はブロックチェーンによって保護されています。</p>
+                    </section>
+                     <section>
+                         <h3 class="font-bold text-slate-700 mb-3">職務経歴と評価</h3>
+                         <div class="space-y-4">
+                            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                                <h4 class="font-bold text-slate-800">カフェ・ド・スマイル 渋谷店</h4>
+                                <p class="text-sm text-slate-500">2024年4月 - 現在</p>
+                                 <div class="mt-3 bg-slate-50 p-3 rounded-lg">
+                                    <p class="text-sm font-semibold text-slate-600">獲得評価ポイント: <span class="font-bold text-lg text-sky-600">245</span></p>
+                                    <p class="mt-2 text-xs text-slate-600 leading-relaxed border-l-2 border-sky-300 pl-2">「新人教育が非常に上手で、チーム全体のスキルアップに貢献してくれました。」<span class="text-slate-400">- 中村店長 (#コミュニケーション: Lv.3)</span></p>
+                                </div>
+                            </div>
+                            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                                <h4 class="font-bold text-slate-800">コンビニNEXT 新宿東口店</h4>
+                                <p class="text-sm text-slate-500">2023年1月 - 2024年3月 (1年3ヶ月)</p>
+                                 <div class="mt-3 bg-slate-50 p-3 rounded-lg">
+                                    <p class="text-sm font-semibold text-slate-600">獲得評価ポイント: <span class="font-bold text-lg text-sky-600">180</span></p>
+                                    <p class="mt-2 text-xs text-slate-600 leading-relaxed border-l-2 border-sky-300 pl-2">「深夜帯でも常に責任感を持って取り組んでくれました。」<span class="text-slate-400">- 鈴木オーナー (#責任感: Lv.2)</span></p>
+                                </div>
+                            </div>
+                         </div>
+                    </section>
+                </main>
+            </div>
+            
+            <!-- ====== 特典交換画面 ====== -->
+            <div id="reward-screen" class="absolute inset-0 flex flex-col hidden">
+                <header class="flex-shrink-0 bg-white/80 backdrop-blur-sm p-4 flex justify-between items-center border-b border-slate-200">
+                    <h1 class="text-xl font-bold text-slate-800">特典交換</h1>
+                    <i class="ph-gift text-2xl text-slate-500"></i>
+                </header>
+                <main class="flex-grow overflow-y-auto p-4 space-y-6">
+                    <section class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                         <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-sm font-bold text-sky-800">累計信頼スコア</p>
+                                <p class="text-3xl font-bold text-sky-600">425</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm font-bold text-amber-800">利用可能トークン</p>
+                                <p class="text-3xl font-bold text-amber-600">180</p>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-2 text-center">トークンを使用しても累計信頼スコアは減りません</p>
+                    </section>
+
+                    <div>
+                        <div class="flex border-b border-slate-200 mb-4">
+                            <button id="tab-cash" class="flex-1 text-center font-bold pb-2 border-b-2 border-sky-500 text-sky-500">現金・商品券</button>
+                            <button id="tab-career" class="flex-1 text-center font-bold pb-2 border-b-2 border-transparent text-slate-400">キャリア</button>
+                        </div>
+
+                        <!-- 現金・商品券タブのコンテンツ -->
+                        <div id="content-cash" class="space-y-4">
+                            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                                <div>
+                                    <h3 class="font-bold text-slate-800">特別ボーナス 5,000円</h3>
+                                    <p class="text-sm font-bold text-amber-600">500 トークン</p>
+                                </div>
+                                <button class="bg-slate-300 text-white font-bold py-2 px-4 rounded-md text-sm cursor-not-allowed" disabled>交換する</button>
+                            </div>
+                            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                                <div>
+                                    <h3 class="font-bold text-slate-800">Amazonギフトカード 1,000円分</h3>
+                                    <p class="text-sm font-bold text-amber-600">100 トークン</p>
+                                </div>
+                                <button class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded-md text-sm transition-colors">交換する</button>
+                            </div>
+                             <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                                <div>
+                                    <h3 class="font-bold text-slate-800">賄いが一品豪華になる券</h3>
+                                    <p class="text-sm font-bold text-amber-600">50 トークン</p>
+                                </div>
+                                <button class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded-md text-sm transition-colors">交換する</button>
+                            </div>
+                        </div>
+
+                        <!-- キャリアタブのコンテンツ -->
+                        <div id="content-career" class="space-y-4 hidden">
+                             <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                                <div>
+                                    <h3 class="font-bold text-slate-800">人気企業人事との面談権</h3>
+                                    <p class="text-sm font-bold text-amber-600">350 トークン</p>
+                                </div>
+                                <button class="bg-slate-300 text-white font-bold py-2 px-4 rounded-md text-sm cursor-not-allowed" disabled>交換する</button>
+                            </div>
+                            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                                <div>
+                                    <h3 class="font-bold text-slate-800">限定キャリア講座への参加権</h3>
+                                    <p class="text-sm font-bold text-amber-600">200 トークン</p>
+                                </div>
+                                <button class="bg-slate-300 text-white font-bold py-2 px-4 rounded-md text-sm cursor-not-allowed" disabled>交換する</button>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+
+            <!-- ====== スカウト画面 ====== -->
+            <div id="scout-screen" class="absolute inset-0 flex flex-col hidden">
+                <header class="flex-shrink-0 bg-white/80 backdrop-blur-sm p-4 flex justify-between items-center border-b border-slate-200">
+                    <h1 class="text-xl font-bold text-slate-800">スカウト</h1>
+                    <i class="ph-funnel-simple text-2xl text-slate-500"></i>
+                </header>
+                <main class="flex-grow overflow-y-auto p-4 space-y-4">
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 cursor-pointer hover:shadow-md transition-shadow">
+                        <div class="flex items-start gap-4">
+                            <img src="https://placehold.co/48x48/1e293b/FFFFFF?text=T" class="w-12 h-12 rounded-lg" alt="企業ロゴ1">
+                            <div class="flex-grow">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h3 class="font-bold text-slate-800">株式会社TECHNEXT</h3>
+                                        <p class="text-sm text-slate-600 mt-1">あなたの「主体性」と「向上心」を高く評価し、特別なインターンシップへご招待します。</p>
+                                    </div>
+                                    <span class="w-3 h-3 bg-sky-500 rounded-full mt-1 flex-shrink-0"></span>
+                                </div>
+                                <div class="mt-2 flex items-center gap-2">
+                                    <span class="text-xs font-semibold text-purple-800 bg-purple-100 px-2 py-0.5 rounded-full">インターン招待</span>
+                                    <span class="text-xs text-slate-400">1日前</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 cursor-pointer hover:shadow-md transition-shadow">
+                        <div class="flex items-start gap-4">
+                            <img src="https://placehold.co/48x48/16a34a/FFFFFF?text=G" class="w-12 h-12 rounded-lg" alt="企業ロゴ2">
+                            <div class="flex-grow">
+                                <h3 class="font-bold text-slate-800">Global Foods Inc.</h3>
+                                <p class="text-sm text-slate-600 mt-1">カフェでの素晴らしいご経験とコミュニケーション能力を拝見しました。ぜひ一度お話しませんか？</p>
+                                <div class="mt-2 flex items-center gap-2">
+                                    <span class="text-xs font-semibold text-green-800 bg-green-100 px-2 py-0.5 rounded-full">正社員スカウト</span>
+                                    <span class="text-xs text-slate-400">3日前</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+
+            <!-- ====== マイページ画面 ====== -->
+            <div id="mypage-screen" class="absolute inset-0 flex flex-col hidden">
+                 <header class="flex-shrink-0 bg-white/80 backdrop-blur-sm p-4 border-b border-slate-200"><h1 class="text-xl font-bold text-slate-800">マイページ</h1></header>
+                <main class="flex-grow overflow-y-auto p-4 space-y-6 bg-slate-100">
+                    <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex items-center gap-4">
+                        <img src="https://placehold.co/64x64/0369a1/FFFFFF?text=私" class="w-16 h-16 rounded-full border-2 border-white shadow" alt="自分のアバター">
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-800">山田 太郎</h2>
+                            <p class="text-sm text-slate-500">カフェ・ド・スマイル 渋谷店</p>
+                        </div>
+                    </section>
+                    <section class="bg-white rounded-xl shadow-sm border border-slate-200">
+                        <ul class="divide-y divide-slate-200">
+                            <li class="p-4 flex justify-between items-center cursor-pointer hover:bg-slate-50 transition-colors">
+                                <div class="flex items-center gap-4"><i class="ph-user-circle text-2xl text-slate-500"></i><span class="text-slate-700 font-medium">プロフィール編集</span></div><i class="ph-caret-right text-lg text-slate-400"></i>
+                            </li>
+                             <li class="p-4 flex justify-between items-center cursor-pointer hover:bg-slate-50 transition-colors">
+                                <div class="flex items-center gap-4"><i class="ph-bell text-2xl text-slate-500"></i><span class="text-slate-700 font-medium">通知設定</span></div><i class="ph-caret-right text-lg text-slate-400"></i>
+                            </li>
+                             <li class="p-4 flex justify-between items-center cursor-pointer hover:bg-slate-50 transition-colors">
+                                <div class="flex items-center gap-4"><i class="ph-buildings text-2xl text-slate-500"></i><span class="text-slate-700 font-medium">所属店舗の管理</span></div><i class="ph-caret-right text-lg text-slate-400"></i>
+                            </li>
+                            <li class="p-4 flex justify-between items-center cursor-pointer hover:bg-slate-50 transition-colors">
+                                <div class="flex items-center gap-4"><i class="ph-question text-2xl text-slate-500"></i><span class="text-slate-700 font-medium">ヘルプセンター</span></div><i class="ph-caret-right text-lg text-slate-400"></i>
+                            </li>
+                        </ul>
+                    </section>
+                     <section>
+                         <button class="w-full text-center p-4 bg-white rounded-xl shadow-sm border border-slate-200 text-red-500 font-medium hover:bg-red-50 transition-colors">ログアウト</button>
+                    </section>
+                </main>
+            </div>
+        </div>
+
+        <nav class="bg-white/80 backdrop-blur-sm border-t border-slate-200 flex justify-around flex-shrink-0">
+            <button id="nav-home" class="flex-1 flex flex-col items-center py-2 text-slate-400"><i class="ph-house text-2xl"></i><span class="text-xs">ホーム</span></button>
+            <button id="nav-proof" class="flex-1 flex flex-col items-center py-2 text-slate-400"><i class="ph-seal-check text-2xl"></i><span class="text-xs">実績証明</span></button>
+            <button id="nav-reward" class="flex-1 flex flex-col items-center py-2 text-slate-400"><i class="ph-gift text-2xl"></i><span class="text-xs">特典交換</span></button>
+            <button id="nav-scout" class="flex-1 flex flex-col items-center py-2 text-slate-400 relative">
+                <i class="ph-briefcase text-2xl"></i>
+                <span class="text-xs">スカウト</span>
+                <span class="absolute top-1 right-1/2 -translate-y-1/2 translate-x-4 w-2 h-2 bg-sky-500 rounded-full"></span>
+            </button>
+            <button id="nav-mypage" class="flex-1 flex flex-col items-center py-2 text-slate-400"><i class="ph-user text-2xl"></i><span class="text-xs">マイページ</span></button>
+        </nav>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const screens = { 
+                login: document.getElementById('login-screen'),
+                home: document.getElementById('home-screen'), 
+                proof: document.getElementById('proof-screen'), 
+                reward: document.getElementById('reward-screen'), 
+                scout: document.getElementById('scout-screen'), 
+                mypage: document.getElementById('mypage-screen') 
+            };
+            const navButtons = { 
+                home: document.getElementById('nav-home'), 
+                proof: document.getElementById('nav-proof'), 
+                reward: document.getElementById('nav-reward'), 
+                scout: document.getElementById('nav-scout'), 
+                mypage: document.getElementById('nav-mypage') 
+            };
+            const navElement = document.querySelector('nav');
+            const loginButton = document.getElementById('login-button');
+
+            function setActiveScreen(screenName) {
+                Object.values(screens).forEach(s => {
+                    if(s) s.classList.add('hidden');
+                });
+                
+                if (screenName === 'login') {
+                    navElement.classList.add('hidden');
+                } else {
+                    navElement.classList.remove('hidden');
+                    Object.values(navButtons).forEach(b => {
+                        if(b) {
+                            b.classList.remove('text-sky-500');
+                            b.classList.add('text-slate-400');
+                            b.querySelector('span').classList.remove('font-bold');
+                        }
+                    });
+                    if (navButtons[screenName]) {
+                        const activeBtn = navButtons[screenName];
+                        activeBtn.classList.add('text-sky-500');
+                        activeBtn.classList.remove('text-slate-400');
+                        activeBtn.querySelector('span').classList.add('font-bold');
+                    }
+                }
+
+                if (screens[screenName]) {
+                    screens[screenName].classList.remove('hidden');
+                }
+            }
+
+            Object.keys(navButtons).forEach(key => {
+                if (navButtons[key]) {
+                    navButtons[key].addEventListener('click', () => setActiveScreen(key));
+                }
+            });
+
+            if (loginButton) {
+                loginButton.addEventListener('click', () => {
+                    setActiveScreen('home');
+                });
+            }
+            
+            // Evaluation logic
+            const evaluationItems = document.querySelectorAll('.evaluation-item');
+            const sendTokenButton = document.getElementById('send-token-button');
+            const evaluationSelects = document.querySelectorAll('.evaluation-select');
+
+            function updateSendButton() {
+                if (!sendTokenButton) return;
+                let totalTokens = 0;
+                
+                evaluationSelects.forEach(select => {
+                    const selectedOption = select.options[select.selectedIndex];
+                    if (selectedOption && selectedOption.dataset.tokens) {
+                        totalTokens += parseInt(selectedOption.dataset.tokens, 10);
+                    }
+                });
+
+                if (totalTokens > 0) {
+                    sendTokenButton.textContent = `${totalTokens} トークンを消費して評価を送る`;
+                    sendTokenButton.disabled = false;
+                    sendTokenButton.classList.remove('bg-slate-400', 'cursor-not-allowed');
+                    sendTokenButton.classList.add('bg-sky-500', 'hover:bg-sky-600');
+                } else {
+                    sendTokenButton.textContent = '評価項目を選択してください';
+                    sendTokenButton.disabled = true;
+                    sendTokenButton.classList.add('bg-slate-400', 'cursor-not-allowed');
+                    sendTokenButton.classList.remove('bg-sky-500', 'hover:bg-sky-600');
+                }
+            }
+            
+            evaluationSelects.forEach(select => {
+                select.addEventListener('change', updateSendButton);
+            });
+
+            evaluationItems.forEach(item => {
+                const infoIcon = item.querySelector('.info-icon');
+                const details = item.querySelector('.criterion-details');
+
+                if(infoIcon && details) {
+                    infoIcon.addEventListener('click', () => {
+                        details.classList.toggle('hidden');
+                    });
+                }
+            });
+            
+            updateSendButton();
+
+            // Reward screen tabs
+            const tabCash = document.getElementById('tab-cash');
+            const tabCareer = document.getElementById('tab-career');
+            const contentCash = document.getElementById('content-cash');
+            const contentCareer = document.getElementById('content-career');
+
+            if(tabCash && tabCareer && contentCash && contentCareer) {
+                tabCash.addEventListener('click', () => {
+                    tabCash.classList.add('border-sky-500', 'text-sky-500');
+                    tabCash.classList.remove('border-transparent', 'text-slate-400');
+                    tabCareer.classList.add('border-transparent', 'text-slate-400');
+                    tabCareer.classList.remove('border-sky-500', 'text-sky-500');
+                    contentCash.classList.remove('hidden');
+                    contentCareer.classList.add('hidden');
+                });
+            
+                tabCareer.addEventListener('click', () => {
+                    tabCareer.classList.add('border-sky-500', 'text-sky-500');
+                    tabCareer.classList.remove('border-transparent', 'text-slate-400');
+                    tabCash.classList.add('border-transparent', 'text-slate-400');
+                    tabCash.classList.remove('border-sky-500', 'text-sky-500');
+                    contentCareer.classList.remove('hidden');
+                    contentCash.classList.add('hidden');
+                });
+            }
+
+            const radarCtx = document.getElementById('radarChart')?.getContext('2d');
+            if (radarCtx) {
+                new Chart(radarCtx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['責任感', '協調性', '主体性', 'コミュニケーション', '向上心'],
+                        datasets: [{
+                            label: '信頼スコア', data: [90, 85, 75, 95, 80],
+                            backgroundColor: 'rgba(14, 165, 233, 0.2)', borderColor: 'rgba(14, 165, 233, 1)',
+                            pointBackgroundColor: 'rgba(14, 165, 233, 1)', pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff', pointHoverBorderColor: 'rgba(14, 165, 233, 1)'
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        scales: { r: { angleLines: { color: '#e2e8f0' }, grid: { color: '#e2e8f0' }, pointLabels: { font: { size: 12, weight: 'bold' }, color: '#475569' }, suggestedMin: 0, suggestedMax: 100, ticks: { backdropColor: 'rgba(255, 255, 255, 0.75)', stepSize: 25 } } },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }
+            
+            setActiveScreen('login');
+        });
+    </script>
+
+</body>
+</html>
+

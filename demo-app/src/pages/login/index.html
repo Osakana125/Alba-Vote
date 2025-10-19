@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ログイン - Alba VOTE</title>
+  <link rel="stylesheet" href="../../styles/main.css">
+  <style>
+    .login-container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .login-card {
+      background: white;
+      border-radius: 1.5rem;
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .logo-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+
+    .logo-title {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+    }
+
+    .logo-subtitle {
+      font-size: 0.875rem;
+      color: var(--gray-600);
+    }
+
+    .user-select {
+      margin-top: 2rem;
+    }
+
+    .user-card {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      border: 2px solid var(--gray-200);
+      border-radius: 0.75rem;
+      margin-bottom: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .user-card:hover {
+      border-color: var(--primary-color);
+      background-color: #EFF6FF;
+      transform: translateX(4px);
+    }
+
+    .user-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .user-info {
+      flex: 1;
+    }
+
+    .user-name {
+      font-weight: 600;
+      font-size: 1.125rem;
+      color: var(--gray-800);
+      margin-bottom: 0.25rem;
+    }
+
+    .user-role {
+      font-size: 0.875rem;
+      color: var(--gray-500);
+    }
+
+    .demo-notice {
+      margin-top: 2rem;
+      padding: 1rem;
+      background-color: #FEF3C7;
+      border-radius: 0.5rem;
+      text-align: center;
+      font-size: 0.875rem;
+      color: #92400E;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-card">
+      <div class="logo">
+        <div class="logo-icon">⭐</div>
+        <h1 class="logo-title">Alba VOTE</h1>
+        <p class="logo-subtitle">信頼がキャリアを拓く</p>
+      </div>
+
+      <div class="user-select">
+        <h2 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem; color: var(--gray-700);">
+          ユーザーを選択してください
+        </h2>
+
+        <div class="user-card" onclick="login('tanaka')">
+          <div class="user-avatar">田</div>
+          <div class="user-info">
+            <div class="user-name">田中 太郎</div>
+            <div class="user-role">アルバイトスタッフ</div>
+          </div>
+        </div>
+
+        <div class="user-card" onclick="login('suzuki')">
+          <div class="user-avatar">鈴</div>
+          <div class="user-info">
+            <div class="user-name">鈴木 花子</div>
+            <div class="user-role">アルバイトスタッフ</div>
+          </div>
+        </div>
+
+        <div class="user-card" onclick="login('sato')">
+          <div class="user-avatar">佐</div>
+          <div class="user-info">
+            <div class="user-name">佐藤 健</div>
+            <div class="user-role">アルバイトスタッフ</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-notice">
+        <strong>デモモード:</strong> いずれかのユーザーを選択してログイン
+      </div>
+    </div>
+  </div>
+
+  <script src="../../scripts/login.js"></script>
+</body>
+</html>

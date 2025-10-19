@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>スカウト - Alba VOTE</title>
+  <link rel="stylesheet" href="../../styles/main.css">
+  <style>
+    .content {
+      padding: 1rem;
+      padding-bottom: 5rem;
+    }
+
+    .intro-section {
+      background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+      color: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .intro-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .intro-subtitle {
+      font-size: 0.875rem;
+      opacity: 0.9;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--gray-800);
+    }
+
+    .scout-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .scout-card {
+      background: white;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .company-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .company-logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 0.5rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .company-info {
+      flex: 1;
+    }
+
+    .company-name {
+      font-weight: 600;
+      font-size: 1.125rem;
+      color: var(--gray-800);
+      margin-bottom: 0.25rem;
+    }
+
+    .company-industry {
+      font-size: 0.875rem;
+      color: var(--gray-500);
+    }
+
+    .job-title {
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 0.5rem;
+    }
+
+    .job-description {
+      font-size: 0.875rem;
+      color: var(--gray-600);
+      margin-bottom: 0.75rem;
+      line-height: 1.5;
+    }
+
+    .job-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .job-tag {
+      padding: 0.25rem 0.75rem;
+      background-color: #DBEAFE;
+      color: #1E40AF;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .scout-action {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .coming-soon {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--gray-500);
+    }
+
+    .coming-soon-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+
+    .coming-soon-text {
+      font-size: 1.125rem;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- ヘッダー -->
+    <div class="header">
+      <div class="header-content">
+        <div>
+          <div class="header-title">スカウト</div>
+          <div class="header-subtitle">企業からのオファー</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- コンテンツ -->
+    <div class="content">
+      <!-- イントロ -->
+      <div class="intro-section">
+        <div class="intro-title">🔍 あなたのスカウト待ち</div>
+        <div class="intro-subtitle">信頼スコアが高いと企業からスカウトが届きます</div>
+      </div>
+
+      <!-- スカウト一覧 -->
+      <div>
+        <h2 class="section-title">📬 届いたスカウト</h2>
+        <div class="scout-list">
+          <div class="scout-card">
+            <div class="company-header">
+              <div class="company-logo">🍔</div>
+              <div class="company-info">
+                <div class="company-name">ハンバーガーチェーンA</div>
+                <div class="company-industry">飲食業</div>
+              </div>
+            </div>
+            <div class="job-title">正社員登用可能なアルバイト募集</div>
+            <div class="job-description">
+              あなたの責任感と協調性が評価されました。当社で一緒に働きませんか？
+            </div>
+            <div class="job-tags">
+              <span class="job-tag">時給1,200円〜</span>
+              <span class="job-tag">シフト自由</span>
+              <span class="job-tag">正社員登用あり</span>
+            </div>
+            <div class="scout-action">
+              <button class="btn btn-primary btn-full" disabled>詳細を見る（準備中）</button>
+            </div>
+          </div>
+
+          <div class="scout-card">
+            <div class="company-header">
+              <div class="company-logo">🏬</div>
+              <div class="company-info">
+                <div class="company-name">小売チェーンB</div>
+                <div class="company-industry">小売業</div>
+              </div>
+            </div>
+            <div class="job-title">店舗リーダー候補募集</div>
+            <div class="job-description">
+              コミュニケーション能力が高く評価されています。リーダー候補として活躍しませんか？
+            </div>
+            <div class="job-tags">
+              <span class="job-tag">時給1,300円〜</span>
+              <span class="job-tag">リーダー候補</span>
+              <span class="job-tag">昇給あり</span>
+            </div>
+            <div class="scout-action">
+              <button class="btn btn-primary btn-full" disabled>詳細を見る（準備中）</button>
+            </div>
+          </div>
+
+          <div class="scout-card">
+            <div class="company-header">
+              <div class="company-logo">☕</div>
+              <div class="company-info">
+                <div class="company-name">カフェチェーンC</div>
+                <div class="company-industry">飲食業</div>
+              </div>
+            </div>
+            <div class="job-title">新店舗オープニングスタッフ</div>
+            <div class="job-description">
+              向上心が素晴らしいです！新店舗で一緒に成長しませんか？
+            </div>
+            <div class="job-tags">
+              <span class="job-tag">時給1,150円〜</span>
+              <span class="job-tag">オープニング</span>
+              <span class="job-tag">交通費支給</span>
+            </div>
+            <div class="scout-action">
+              <button class="btn btn-primary btn-full" disabled>詳細を見る（準備中）</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coming Soon -->
+      <div class="coming-soon">
+        <div class="coming-soon-icon">🚧</div>
+        <div class="coming-soon-text">スカウト機能は準備中です</div>
+        <p style="margin-top: 0.5rem; font-size: 0.875rem;">デモ版では表示のみとなります</p>
+      </div>
+    </div>
+
+    <!-- ボトムナビゲーション -->
+    <nav class="bottom-nav">
+      <a href="../home/index.html" class="nav-item">
+        <div class="nav-icon">🏠</div>
+        <div class="nav-label">ホーム</div>
+      </a>
+      <a href="../proof/index.html" class="nav-item">
+        <div class="nav-icon">📊</div>
+        <div class="nav-label">実績証明</div>
+      </a>
+      <a href="../rewards/index.html" class="nav-item">
+        <div class="nav-icon">🎁</div>
+        <div class="nav-label">特典交換</div>
+      </a>
+      <a href="index.html" class="nav-item active">
+        <div class="nav-icon">🔍</div>
+        <div class="nav-label">スカウト</div>
+      </a>
+      <a href="../mypage/index.html" class="nav-item">
+        <div class="nav-icon">👤</div>
+        <div class="nav-label">マイページ</div>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

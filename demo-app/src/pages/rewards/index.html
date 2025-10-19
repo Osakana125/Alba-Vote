@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>特典交換 - Alba VOTE</title>
+  <link rel="stylesheet" href="../../styles/main.css">
+  <style>
+    .content {
+      padding: 1rem;
+      padding-bottom: 5rem;
+    }
+
+    .token-balance {
+      background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+      color: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .token-amount {
+      font-size: 3rem;
+      font-weight: bold;
+      margin: 0.5rem 0;
+    }
+
+    .token-label {
+      font-size: 0.875rem;
+      opacity: 0.9;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--gray-800);
+    }
+
+    .reward-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .reward-card {
+      background: white;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      display: flex;
+      gap: 1rem;
+    }
+
+    .reward-icon {
+      font-size: 3rem;
+      flex-shrink: 0;
+    }
+
+    .reward-info {
+      flex: 1;
+    }
+
+    .reward-name {
+      font-weight: 600;
+      font-size: 1.125rem;
+      margin-bottom: 0.25rem;
+      color: var(--gray-800);
+    }
+
+    .reward-description {
+      font-size: 0.875rem;
+      color: var(--gray-600);
+      margin-bottom: 0.75rem;
+    }
+
+    .reward-cost {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.25rem 0.75rem;
+      background-color: #FEF3C7;
+      color: #92400E;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    .coming-soon {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--gray-500);
+    }
+
+    .coming-soon-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+
+    .coming-soon-text {
+      font-size: 1.125rem;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- ヘッダー -->
+    <div class="header">
+      <div class="header-content">
+        <div>
+          <div class="header-title">特典交換</div>
+          <div class="header-subtitle">トークンで特典をゲット</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- コンテンツ -->
+    <div class="content">
+      <!-- トークン残高 -->
+      <div class="token-balance">
+        <div class="token-label">保有トークン</div>
+        <div class="token-amount">100 🪙</div>
+        <div class="token-label">評価を送って獲得しよう</div>
+      </div>
+
+      <!-- 交換可能な特典 -->
+      <div>
+        <h2 class="section-title">🎁 交換可能な特典</h2>
+        <div class="reward-grid">
+          <div class="reward-card">
+            <div class="reward-icon">💴</div>
+            <div class="reward-info">
+              <div class="reward-name">現金キャッシュバック</div>
+              <div class="reward-description">500円分のキャッシュバック</div>
+              <div class="reward-cost">🪙 50トークン</div>
+            </div>
+          </div>
+
+          <div class="reward-card">
+            <div class="reward-icon">🎫</div>
+            <div class="reward-info">
+              <div class="reward-name">Amazonギフト券</div>
+              <div class="reward-description">1,000円分のギフト券</div>
+              <div class="reward-cost">🪙 100トークン</div>
+            </div>
+          </div>
+
+          <div class="reward-card">
+            <div class="reward-icon">📚</div>
+            <div class="reward-info">
+              <div class="reward-name">キャリア相談</div>
+              <div class="reward-description">プロのキャリアアドバイザーによる30分相談</div>
+              <div class="reward-cost">🪙 80トークン</div>
+            </div>
+          </div>
+
+          <div class="reward-card">
+            <div class="reward-icon">🎓</div>
+            <div class="reward-info">
+              <div class="reward-name">スキルアップ講座</div>
+              <div class="reward-description">オンライン講座1ヶ月無料</div>
+              <div class="reward-cost">🪙 150トークン</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coming Soon -->
+      <div class="coming-soon">
+        <div class="coming-soon-icon">🚧</div>
+        <div class="coming-soon-text">交換機能は準備中です</div>
+        <p style="margin-top: 0.5rem; font-size: 0.875rem;">デモ版では表示のみとなります</p>
+      </div>
+    </div>
+
+    <!-- ボトムナビゲーション -->
+    <nav class="bottom-nav">
+      <a href="../home/index.html" class="nav-item">
+        <div class="nav-icon">🏠</div>
+        <div class="nav-label">ホーム</div>
+      </a>
+      <a href="../proof/index.html" class="nav-item">
+        <div class="nav-icon">📊</div>
+        <div class="nav-label">実績証明</div>
+      </a>
+      <a href="index.html" class="nav-item active">
+        <div class="nav-icon">🎁</div>
+        <div class="nav-label">特典交換</div>
+      </a>
+      <a href="../scout/index.html" class="nav-item">
+        <div class="nav-icon">🔍</div>
+        <div class="nav-label">スカウト</div>
+      </a>
+      <a href="../mypage/index.html" class="nav-item">
+        <div class="nav-icon">👤</div>
+        <div class="nav-label">マイページ</div>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

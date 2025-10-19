@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alba VOTE - 信頼証明書</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/phosphor-icons/1.4.2/css/phosphor.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            background-color: #e2e8f0; /* slate-200 */
+        }
+        .certificate-container {
+            font-family: 'Source Serif Pro', serif;
+            width: 100%;
+            max-width: 800px;
+            background-color: white;
+            border: 10px solid transparent;
+            border-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg fill='%230369a1' fill-opacity='0.8'%3E%3Cpath d='M12 0h24v12h-24zM0 12v24h12v-24zM36 12v24h12v-24zM12 36h24v12h-24z'/%3E%3C/g%3E%3C/svg%3E") 10;
+            padding: 2.5rem;
+        }
+        .sans-text {
+             font-family: 'Inter', 'Noto Sans JP', sans-serif;
+        }
+    </style>
+</head>
+<body class="flex justify-center items-center min-h-screen p-4">
+
+    <div class="certificate-container shadow-2xl">
+        <header class="text-center border-b-2 border-double border-slate-400 pb-4">
+            <div class="flex justify-center items-center gap-3">
+                 <div class="w-12 h-12">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <defs><radialGradient id="gradC"><stop offset="50%" stop-color="#fff" /><stop offset="100%" stop-color="#e0f2fe" /></radialGradient></defs>
+                        <circle cx="50" cy="50" r="48" fill="url(#gradC)" opacity="0.6"/><circle cx="50" cy="50" r="35" fill="url(#gradC)" opacity="0.8"/>
+                        <g><circle cx="50" cy="50" r="18" fill="#0369a1"/><path d="M50 68 C 38 68, 38 90, 50 90 C 62 90, 62 68, 50 68 Z" fill="#0369a1"/><circle cx="50" cy="45" r="8" fill="white"/></g>
+                    </svg>
+                </div>
+                <h1 class="text-4xl font-bold text-slate-800">信頼証明書</h1>
+            </div>
+            <p class="sans-text text-sm text-slate-500 mt-1">Certificate of Trust</p>
+        </header>
+
+        <main class="mt-8">
+            <p class="sans-text text-lg text-center text-slate-700">下記の者の勤務における貢献と信頼性は、Alba VOTE プラットフォームにおいてブロックチェーン上に記録された事実であることを証明します。</p>
+
+            <div class="text-center my-8">
+                <h2 class="text-5xl font-bold tracking-wider text-slate-900">山田 太郎 <span class="text-3xl">殿</span></h2>
+            </div>
+            
+            <div class="flex flex-col md:flex-row gap-8 items-center bg-slate-50 p-6 rounded-lg border border-slate-200 my-8">
+                <div class="flex-1 text-center">
+                    <p class="text-xl font-bold text-sky-800">総合信頼スコア</p>
+                    <p class="text-7xl font-bold text-sky-600 sans-text">425</p>
+                </div>
+                <div class="flex-1 w-full max-w-xs h-64">
+                    <canvas id="radarChartCertificate"></canvas>
+                </div>
+            </div>
+
+            <section class="sans-text">
+                <h3 class="text-2xl font-bold text-slate-800 mb-4 border-b border-slate-300 pb-2">主な職務経歴と評価</h3>
+                <div class="space-y-4">
+                    <div class="bg-white p-4 rounded-lg">
+                        <h4 class="font-bold text-slate-800">カフェ・ド・スマイル 渋谷店</h4>
+                        <p class="text-sm text-slate-500">2024年4月 - 現在</p>
+                        <p class="mt-2 text-sm text-slate-600 leading-relaxed border-l-2 border-sky-300 pl-3">「新人教育が非常に上手で、チーム全体のスキルアップに貢献してくれました。」<span class="text-slate-500">- 中村店長 (#コミュニケーション: Lv.3)</span></p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg">
+                        <h4 class="font-bold text-slate-800">コンビニNEXT 新宿東口店</h4>
+                        <p class="text-sm text-slate-500">2023年1月 - 2024年3月 (1年3ヶ月)</p>
+                        <p class="mt-2 text-sm text-slate-600 leading-relaxed border-l-2 border-sky-300 pl-3">「深夜帯でも常に責任感を持って取り組んでくれました。」<span class="text-slate-500">- 鈴木オーナー (#責任感: Lv.2)</span></p>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <footer class="sans-text mt-10 pt-6 border-t border-slate-300">
+            <h4 class="text-lg font-bold text-slate-700">ブロックチェーンによる検証</h4>
+            <div class="mt-2 bg-slate-100 p-3 rounded-md text-xs text-slate-600 break-words">
+                <p class="font-semibold">最終トランザクションID (Polygon Network):</p>
+                <p class="font-mono mt-1">0x123abcde4567fghij8901klmno2345pqrst6789uvwxy012345z6789abcd</p>
+            </div>
+            <a href="#" class="inline-block mt-2 text-sm text-sky-600 hover:underline">
+                PolygonScanで確認する <i class="ph-arrow-square-out align-middle"></i>
+            </a>
+            <p class="text-right text-sm text-slate-600 mt-4">発行日: 2025年10月19日</p>
+        </footer>
+    </div>
+    
+    <script>
+        const radarCtx = document.getElementById('radarChartCertificate')?.getContext('2d');
+        if (radarCtx) {
+            new Chart(radarCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['責任感', '協調性', '主体性', 'コミュニケーション', '向上心'],
+                    datasets: [{
+                        label: '信頼スコア', data: [90, 85, 75, 95, 80],
+                        backgroundColor: 'rgba(14, 165, 233, 0.2)',
+                        borderColor: 'rgba(14, 165, 233, 1)',
+                        pointBackgroundColor: 'rgba(14, 165, 233, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(14, 165, 233, 1)'
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: '#e2e8f0' },
+                            grid: { color: '#e2e8f0' },
+                            pointLabels: {
+                                font: { family: "'Inter', 'Noto Sans JP', sans-serif", size: 12, weight: 'bold' },
+                                color: '#475569'
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 100,
+                            ticks: {
+                                backdropColor: 'rgba(255, 255, 255, 0.75)',
+                                stepSize: 25,
+                                font: { family: "'Inter', sans-serif" }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

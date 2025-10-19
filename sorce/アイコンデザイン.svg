@@ -1,0 +1,33 @@
+<div class="bg-white p-8 rounded-2xl shadow-lg border border-slate-200 flex flex-col items-center">
+                <h2 class="text-2xl font-bold text-sky-700 mb-2">デザイン案 H</h2>
+                <p class="text-slate-600 mb-6 text-center">「評価のレイヤー」</p>
+                 <div class="w-40 h-40 mb-6">
+                    <!-- SVG Icon H -->
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <radialGradient id="gradH">
+                                <stop offset="50%" stop-color="#fff" />
+                                <stop offset="100%" stop-color="#e0f2fe" />
+                            </radialGradient>
+                        </defs>
+                        
+                        <!-- Concentric circles/layers -->
+                        <circle cx="50" cy="50" r="45" fill="url(#gradH)" opacity="0.6"/>
+                        <circle cx="50" cy="50" r="30" fill="url(#gradH)" opacity="0.8"/>
+
+                        <!-- Data points representing evaluation -->
+                        <circle cx="20" cy="40" r="4" fill="#fbbf24"/>
+                        <circle cx="75" cy="28" r="4" fill="#fbbf24"/>
+                        <circle cx="80" cy="65" r="4" fill="#fbbf24"/>
+
+                        <!-- Person in the center -->
+                        <g>
+                            <circle cx="50" cy="50" r="15" fill="#0369a1"/>
+                            <path d="M50 65 C 40 65, 40 85, 50 85 C 60 85, 60 65, 50 65 Z" fill="#0369a1"/>
+                            <circle cx="50" cy="42" r="7" fill="white"/>
+                        </g>
+                    </svg>
+                </div>
+                <p class="text-slate-500 text-center text-sm">個人を中心に、良い評価（点）が信頼の層（円）として積み重なっていくイメージ。個人の成長と信頼の蓄積を表現しました。</p>
+            </div>
+            
