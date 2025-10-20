@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alba VOTE - リアルタイム版</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/phosphor-icons/1.4.2/css/phosphor.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+        }
+        .evaluation-select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.5rem center;
+            background-size: 1.2em;
+            padding-right: 2rem;
+        }
+        button:disabled {
+            background-color: #94a3b8;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="bg-slate-200 flex justify-center items-center min-h-screen p-4">
+
+    <!-- スマホ画面のフレーム -->
+    <div class="w-full max-w-sm h-[800px] bg-slate-50 rounded-3xl shadow-2xl overflow-hidden flex flex-col border-4 border-slate-800">
+
+        <!-- アプリのメインコンテナ -->
+        <div id="app-container" class="flex-grow relative">
+            
+            <!-- ====== ログイン画面 ====== -->
+            <div id="login-screen" class="absolute inset-0 flex flex-col bg-slate-50 p-8 justify-center items-center">
+                <div class="text-center mb-10">
+                    <div class="w-20 h-20 mx-auto">
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <defs><radialGradient id="gradL"><stop offset="50%" stop-color="#fff" /><stop offset="100%" stop-color="#e0f2fe" /></radialGradient></defs>
+                            <circle cx="50" cy="50" r="48" fill="url(#gradL)" opacity="0.6"/><circle cx="50" cy="50" r="35" fill="url(#gradL)" opacity="0.8"/>
+                            <circle cx="20" cy="40" r="5" fill="#fbbf24"/><circle cx="75" cy="28" r="5" fill="#fbbf24"/><circle cx="80" cy="65" r="5" fill="#fbbf24"/>
+                            <g><circle cx="50" cy="50" r="18" fill="#0369a1"/><path d="M50 68 C 38 68, 38 90, 50 90 C 62 90, 62 68, 50 68 Z" fill="#0369a1"/><circle cx="50" cy="45" r="8" fill="white"/></g>
+                        </svg>
+                    </div>
+                    <h1 class="text-3xl font-bold text-slate-800 mt-4">Alba VOTE</h1>
+                    <p class="text-slate-500 mt-1">信頼がキャリアを拓く - リアルタイム版</p>
+                </div>
+
+                <div class="w-full space-y-4">
+                    <div class="space-y-3">
+                        <div class="bg-white p-4 rounded-lg border-2 border-slate-200 hover:border-sky-500 cursor-pointer transition-colors" onclick="loginAsUser('tanaka')">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 bg-gradient-to-br from-sky-400 to-sky-600 rounded-full flex items-center justify-center text-white font-bold text-lg">田</div>
+                                <div>
+                                    <p class="font-bold text-slate-800">田中 太郎</p>
+                                    <p class="text-sm text-slate-500">アルバイトスタッフ</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg border-2 border-slate-200 hover:border-sky-500 cursor-pointer transition-colors" onclick="loginAsUser('suzuki')">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg">鈴</div>
+                                <div>
+                                    <p class="font-bold text-slate-800">鈴木 花子</p>
+                                    <p class="text-sm text-slate-500">アルバイトスタッフ</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg border-2 border-slate-200 hover:border-sky-500 cursor-pointer transition-colors" onclick="loginAsUser('sato')">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-lg">佐</div>
+                                <div>
+                                    <p class="font-bold text-slate-800">佐藤 健</p>
+                                    <p class="text-sm text-slate-500">アルバイトスタッフ</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-auto pt-8">
+                    <p class="text-center text-sm text-slate-500">
+                        デモモード：いずれかのユーザーを選択
+                    </p>
+                </div>
+            </div>
+
+            <!-- ====== ホーム画面 ====== -->
+            <div id="home-screen" class="absolute inset-0 flex flex-col hidden">
+                <div class="flex-shrink-0">
+                    <header class="bg-white/80 backdrop-blur-sm p-4 flex justify-between items-center border-b border-slate-200">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8">
+                                 <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                    <defs><radialGradient id="gradH"><stop offset="50%" stop-color="#fff" /><stop offset="100%" stop-color="#e0f2fe" /></radialGradient></defs>
+                                    <circle cx="50" cy="50" r="45" fill="url(#gradH)" opacity="0.6"/><circle cx="50" cy="50" r="30" fill="url(#gradH)" opacity="0.8"/>
+                                    <circle cx="20" cy="40" r="4" fill="#fbbf24"/><circle cx="75" cy="28" r="4" fill="#fbbf24"/><circle cx="80" cy="65" r="4" fill="#fbbf24"/>
+                                    <g><circle cx="50" cy="50" r="15" fill="#0369a1"/><path d="M50 65 C 40 65, 40 85, 50 85 C 60 85, 60 65, 50 65 Z" fill="#0369a1"/><circle cx="50" cy="42" r="7" fill="white"/></g>
+                                </svg>
+                            </div>
+                            <h1 class="text-xl font-bold text-slate-800">Alba VOTE</h1>
+                        </div>
+                        <i class="ph-bell text-2xl text-slate-500"></i>
+                    </header>
+                     <div class="bg-white p-2 text-center border-b border-slate-200">
+                        <p class="text-sm text-slate-600">現在の所属： <span class="font-bold">カフェ・ド・スマイル 渋谷店</span></p>
+                    </div>
+                </div>
+
+                <main class="flex-grow overflow-y-auto p-4 space-y-6">
+                    <section class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                        <h2 class="font-bold text-slate-700 mb-3">感謝を伝える</h2>
+                        <div class="space-y-3">
+                            <select id="recipient-select" class="w-full p-2 border border-slate-300 rounded-md bg-slate-50 focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
+                                <option>誰に送りますか？</option>
+                            </select>
+                            <textarea id="comment-input" placeholder="どんな貢献でしたか？（任意）" class="w-full p-2 border border-slate-300 rounded-md h-20 bg-slate-50 focus:ring-2 focus:ring-sky-500 focus:border-sky-500"></textarea>
+                            <div class="pt-1">
+                                <p class="text-sm font-medium text-slate-600 mb-2">どの点を評価しますか？</p>
+                                <div id="evaluation-criteria" class="space-y-4">
+                                    <!-- Item 1: 責任感 -->
+                                    <div class="evaluation-item bg-slate-50/50 p-3 rounded-lg border">
+                                        <div class="flex justify-between items-center">
+                                            <h4 class="font-bold text-slate-700 text-sm">#責任感</h4>
+                                            <div class="flex items-center gap-2">
+                                                <select class="evaluation-select text-sm font-semibold p-1 border border-slate-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500" data-category="responsibility">
+                                                    <option value="0">レベルを選択</option>
+                                                    <option value="1" data-tokens="1">Lv.1</option>
+                                                    <option value="2" data-tokens="2">Lv.2</option>
+                                                    <option value="3" data-tokens="3">Lv.3</option>
+                                                </select>
+                                                <i class="ph-info text-xl text-slate-400 cursor-pointer info-icon"></i>
+                                            </div>
+                                        </div>
+                                        <div class="criterion-details hidden mt-2 pt-2 border-t border-slate-200 text-xs text-slate-600 space-y-1">
+                                            <p><strong>定義:</strong> 与えられた役割や仕事を、最後までやり遂げようとする姿勢。</p>
+                                            <ul class="list-disc list-inside text-slate-500">
+                                                <li><strong>Lv.1 (基本的):</strong> 指示された業務・役割を完遂する。</li>
+                                                <li><strong>Lv.2 (自律的):</strong> 予期せぬ問題にも適切に対応する。</li>
+                                                <li><strong>Lv.3 (模範的):</strong> チーム全体の成果に責任を持つ。</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <!-- Item 2: 協調性 -->
+                                    <div class="evaluation-item bg-slate-50/50 p-3 rounded-lg border">
+                                        <div class="flex justify-between items-center">
+                                            <h4 class="font-bold text-slate-700 text-sm">#協調性</h4>
+                                            <div class="flex items-center gap-2">
+                                                 <select class="evaluation-select text-sm font-semibold p-1 border border-slate-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500" data-category="cooperation">
+                                                    <option value="0">レベルを選択</option>
+                                                    <option value="1" data-tokens="1">Lv.1</option>
+                                                    <option value="2" data-tokens="2">Lv.2</option>
+                                                    <option value="3" data-tokens="3">Lv.3</option>
+                                                </select>
+                                                <i class="ph-info text-xl text-slate-400 cursor-pointer info-icon"></i>
+                                            </div>
+                                        </div>
+                                         <div class="criterion-details hidden mt-2 pt-2 border-t border-slate-200 text-xs text-slate-600 space-y-1">
+                                            <p><strong>定義:</strong> チームの一員として、周囲のメンバーと協力し、目標達成に貢献しようとする姿勢。</p>
+                                             <ul class="list-disc list-inside text-slate-500">
+                                                <li><strong>Lv.1 (基本的):</strong> チームのルールを守り、円滑な連携を行う。</li>
+                                                <li><strong>Lv.2 (自律的):</strong> 周囲の状況を察知し、自発的に支援する。</li>
+                                                <li><strong>Lv.3 (模範的):</strong> チームの雰囲気を良くする働きかけをする。</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <!-- Item 3: 主体性 -->
+                                    <div class="evaluation-item bg-slate-50/50 p-3 rounded-lg border">
+                                        <div class="flex justify-between items-center">
+                                            <h4 class="font-bold text-slate-700 text-sm">#主体性</h4>
+                                            <div class="flex items-center gap-2">
+                                                 <select class="evaluation-select text-sm font-semibold p-1 border border-slate-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500" data-category="initiative">
+                                                    <option value="0">レベルを選択</option>
+                                                    <option value="1" data-tokens="1">Lv.1</option>
+                                                    <option value="2" data-tokens="2">Lv.2</option>
+                                                    <option value="3" data-tokens="3">Lv.3</option>
+                                                </select>
+                                                <i class="ph-info text-xl text-slate-400 cursor-pointer info-icon"></i>
+                                            </div>
+                                        </div>
+                                        <div class="criterion-details hidden mt-2 pt-2 border-t border-slate-200 text-xs text-slate-600 space-y-1">
+                                            <p><strong>定義:</strong> 指示を待つだけでなく、自ら課題を見つけ、より良くするための改善行動や提案をしようとする姿勢。</p>
+                                             <ul class="list-disc list-inside text-slate-500">
+                                                <li><strong>Lv.1 (基本的):</strong> 指示されたこと以上の仕事を見つけて行う。</li>
+                                                <li><strong>Lv.2 (自律的):</strong> 常に「もっと良くするには」を考え、行動する。</li>
+                                                <li><strong>Lv.3 (模範的):</strong> 新たな価値や仕組みを提案し、実行する。</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <!-- Item 4: コミュニケーション -->
+                                    <div class="evaluation-item bg-slate-50/50 p-3 rounded-lg border">
+                                        <div class="flex justify-between items-center">
+                                            <h4 class="font-bold text-slate-700 text-sm">#コミュニケーション</h4>
+                                            <div class="flex items-center gap-2">
+                                                 <select class="evaluation-select text-sm font-semibold p-1 border border-slate-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500" data-category="communication">
+                                                    <option value="0">レベルを選択</option>
+                                                    <option value="1" data-tokens="1">Lv.1</option>
+                                                    <option value="2" data-tokens="2">Lv.2</option>
+                                                    <option value="3" data-tokens="3">Lv.3</option>
+                                                </select>
+                                                <i class="ph-info text-xl text-slate-400 cursor-pointer info-icon"></i>
+                                            </div>
+                                        </div>
+                                        <div class="criterion-details hidden mt-2 pt-2 border-t border-slate-200 text-xs text-slate-600 space-y-1">
+                                            <p><strong>定義:</strong> 相手の意図を正確に理解し、自分の考えや情報を分かりやすく伝え、円滑な人間関係を築く能力。</p>
+                                            <ul class="list-disc list-inside text-slate-500">
+                                                <li><strong>Lv.1 (基本的):</strong> 明るい挨拶と丁寧な言葉遣いができる。</li>
+                                                <li><strong>Lv.2 (自律的):</strong> チームに必要な「報・連・相」を徹底できる。</li>
+                                                <li><strong>Lv.3 (模範的):</strong> 相手の立場や状況に合わせた伝え方ができる。</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                     <!-- Item 5: 向上心 -->
+                                    <div class="evaluation-item bg-slate-50/50 p-3 rounded-lg border">
+                                        <div class="flex justify-between items-center">
+                                            <h4 class="font-bold text-slate-700 text-sm">#向上心</h4>
+                                            <div class="flex items-center gap-2">
+                                                 <select class="evaluation-select text-sm font-semibold p-1 border border-slate-300 rounded-md bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500" data-category="improvement">
+                                                    <option value="0">レベルを選択</option>
+                                                    <option value="1" data-tokens="1">Lv.1</option>
+                                                    <option value="2" data-tokens="2">Lv.2</option>
+                                                    <option value="3" data-tokens="3">Lv.3</option>
+                                                </select>
+                                                <i class="ph-info text-xl text-slate-400 cursor-pointer info-icon"></i>
+                                            </div>
+                                        </div>
+                                        <div class="criterion-details hidden mt-2 pt-2 border-t border-slate-200 text-xs text-slate-600 space-y-1">
+                                            <p><strong>定義:</strong> 現状に満足せず、常に新しい知識やスキルを吸収し、自身の成長や能力向上に意欲的に取り組む姿勢。</p>
+                                            <ul class="list-disc list-inside text-slate-500">
+                                                <li><strong>Lv.1 (基本的):</strong> 新しい業務を意欲的に覚えようとする。</li>
+                                                <li><strong>Lv.2 (自律的):</strong> 失敗から学び、次に活かすことができる。</li>
+                                                <li><strong>Lv.3 (模範的):</strong> 自分の学びをチームに還元する。</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button id="send-token-button" class="w-full bg-sky-500 text-white font-bold py-2.5 rounded-md hover:bg-sky-600 transition-colors mt-2">
+                                評価項目を選択してください
+                            </button>
+                        </div>
+                    </section>
+                     <section>
+                        <h2 class="font-bold text-slate-700 mb-3">最近のTHANKS <span class="text-xs text-green-600">(リアルタイム更新)</span></h2>
+                        <div id="thanks-timeline" class="space-y-4">
+                            <!-- JavaScriptで動的生成 -->
+                        </div>
+                    </section>
+                </main>
+            </div>
+
+            <!-- ====== 実績証明画面 ====== -->
+            <div id="proof-screen" class="absolute inset-0 flex flex-col hidden">
+                <header class="flex-shrink-0 bg-white/80 backdrop-blur-sm p-4 flex justify-between items-center border-b border-slate-200">
+                    <h1 class="text-xl font-bold text-slate-800">実績証明 <span class="text-xs text-green-600">(自動更新)</span></h1>
+                    <i class="ph-share-network text-2xl text-slate-500"></i>
+                </header>
+                <main class="flex-grow overflow-y-auto p-4 space-y-6">
+                    <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 text-center">
+                        <div id="proof-avatar" class="w-20 h-20 rounded-full mx-auto mb-3 border-4 border-white shadow-md bg-gradient-to-br from-sky-400 to-sky-600 flex items-center justify-center text-white font-bold text-2xl">田</div>
+                        <h2 id="proof-name" class="text-2xl font-bold text-slate-800">田中 太郎</h2>
+                        <div class="mt-4 bg-sky-50 border-2 border-sky-200 rounded-lg p-3">
+                            <p class="text-sm font-bold text-sky-800">総合信頼スコア</p>
+                            <p id="total-score-display" class="text-4xl font-bold text-sky-600">0</p>
+                        </div>
+                    </section>
+                     <section class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-slate-700 mb-2 text-center">評価ポートフォリオ</h3>
+                        <div class="w-full h-64"><canvas id="radarChart"></canvas></div>
+                    </section>
+                    <section class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-slate-700 mb-2 text-center">実績を共有・証明する</h3>
+                        <div class="flex justify-center">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=AlbaVOTE-Proof-Demo" class="rounded-lg" alt="実績証明QRコード">
+                        </div>
+                         <p class="text-xs text-slate-500 mt-2 text-center">応募先の担当者にこのQRコードを提示してください。<br>この実績はブロックチェーンによって保護されています。</p>
+                    </section>
+                     <section>
+                         <h3 class="font-bold text-slate-700 mb-3">受け取った評価</h3>
+                         <div id="evaluation-history" class="space-y-4">
+                            <!-- JavaScriptで動的生成 -->
+                         </div>
+                    </section>
+                </main>
+            </div>
+
+            <!-- ====== 特典交換画面 ====== -->
+            <div id="reward-screen" class="absolute inset-0 flex flex-col hidden">
+                <header class="flex-shrink-0 bg-white/80 backdrop-blur-sm p-4 flex justify-between items-center border-b border-slate-200">
+                    <h1 class="text-xl font-bold text-slate-800">特典交換</h1>
+                    <i class="ph-gift text-2xl text-slate-500"></i>
+                </header>
+                <main class="flex-grow overflow-y-auto p-4 space-y-6">
+                    <section class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                         <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-sm font-bold text-sky-800">累計信頼スコア</p>
+                                <p class="text-3xl font-bold text-sky-600">425</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm font-bold text-amber-800">利用可能トークン</p>
+                                <p class="text-3xl font-bold text-amber-600">180</p>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-2 text-center">トークンを使用しても累計信頼スコアは減りません</p>
+                    </section>
+
+                    <div>
+                        <div class="flex border-b border-slate-200 mb-4">
+                            <button id="tab-cash" class="flex-1 text-center font-bold pb-2 border-b-2 border-sky-500 text-sky-500">現金・商品券</button>
+                            <button id="tab-career" class="flex-1 text-center font-bold pb-2 border-b-2 border-transparent text-slate-400">キャリア</button>
+                        </div>
+
+                        <!-- 現金・商品券タブのコンテンツ -->
+                        <div id="content-cash" class="space-y-4">
+                            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                                <div>
+                                    <h3 class="font-bold text-slate-800">特別ボーナス 5,000円</h3>
+                                    <p class="text-sm font-bold text-amber-600">500 トークン</p>
+                                </div>
+                                <button class="bg-slate-300 text-white font-bold py-2 px-4 rounded-md text-sm cursor-not-allowed" disabled>交換する</button>
+                            </div>
+                            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                                <div>
+                                    <h3 class="font-bold text-slate-800">Amazonギフトカード 1,000円分</h3>
+                                    <p class="text-sm font-bold text-amber-600">100 トークン</p>
+                                </div>
+                                <button class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded-md text-sm transition-colors">交換する</button>
+                            </div>
+                             <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                                <div>
+                                    <h3 class="font-bold text-slate-800">賄いが一品豪華になる券</h3>
+                                    <p class="text-sm font-bold text-amber-600">50 トークン</p>
+                                </div>
+                                <button class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded-md text-sm transition-colors">交換する</button>
+                            </div>
+                        </div>
+
+                        <!-- キャリアタブのコンテンツ -->
+                        <div id="content-career" class="space-y-4 hidden">
+                             <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                                <div>
+                                    <h3 class="font-bold text-slate-800">人気企業人事との面談権</h3>
+                                    <p class="text-sm font-bold text-amber-600">350 トークン</p>
+                                </div>
+                                <button class="bg-slate-300 text-white font-bold py-2 px-4 rounded-md text-sm cursor-not-allowed" disabled>交換する</button>
+                            </div>
+                            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                                <div>
+                                    <h3 class="font-bold text-slate-800">限定キャリア講座への参加権</h3>
+                                    <p class="text-sm font-bold text-amber-600">200 トークン</p>
+                                </div>
+                                <button class="bg-slate-300 text-white font-bold py-2 px-4 rounded-md text-sm cursor-not-allowed" disabled>交換する</button>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+
+            <!-- ====== スカウト画面 ====== -->
+            <div id="scout-screen" class="absolute inset-0 flex flex-col hidden">
+                <header class="flex-shrink-0 bg-white/80 backdrop-blur-sm p-4 flex justify-between items-center border-b border-slate-200">
+                    <h1 class="text-xl font-bold text-slate-800">スカウト</h1>
+                    <i class="ph-funnel-simple text-2xl text-slate-500"></i>
+                </header>
+                <main class="flex-grow overflow-y-auto p-4 space-y-4">
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 cursor-pointer hover:shadow-md transition-shadow">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center text-white font-bold text-xl">T</div>
+                            <div class="flex-grow">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h3 class="font-bold text-slate-800">株式会社TECHNEXT</h3>
+                                        <p class="text-sm text-slate-600 mt-1">あなたの「主体性」と「向上心」を高く評価し、特別なインターンシップへご招待します。</p>
+                                    </div>
+                                    <span class="w-3 h-3 bg-sky-500 rounded-full mt-1 flex-shrink-0"></span>
+                                </div>
+                                <div class="mt-2 flex items-center gap-2">
+                                    <span class="text-xs font-semibold text-purple-800 bg-purple-100 px-2 py-0.5 rounded-full">インターン招待</span>
+                                    <span class="text-xs text-slate-400">1日前</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 cursor-pointer hover:shadow-md transition-shadow">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center text-white font-bold text-xl">G</div>
+                            <div class="flex-grow">
+                                <h3 class="font-bold text-slate-800">Global Foods Inc.</h3>
+                                <p class="text-sm text-slate-600 mt-1">カフェでの素晴らしいご経験とコミュニケーション能力を拝見しました。ぜひ一度お話しませんか？</p>
+                                <div class="mt-2 flex items-center gap-2">
+                                    <span class="text-xs font-semibold text-green-800 bg-green-100 px-2 py-0.5 rounded-full">正社員スカウト</span>
+                                    <span class="text-xs text-slate-400">3日前</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+
+            <!-- ====== マイページ画面 ====== -->
+            <div id="mypage-screen" class="absolute inset-0 flex flex-col hidden">
+                 <header class="flex-shrink-0 bg-white/80 backdrop-blur-sm p-4 border-b border-slate-200"><h1 class="text-xl font-bold text-slate-800">マイページ</h1></header>
+                <main class="flex-grow overflow-y-auto p-4 space-y-6 bg-slate-100">
+                    <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex items-center gap-4">
+                        <div id="mypage-avatar" class="w-16 h-16 rounded-full border-2 border-white shadow bg-gradient-to-br from-sky-400 to-sky-600 flex items-center justify-center text-white font-bold text-2xl">田</div>
+                        <div>
+                            <h2 id="mypage-name" class="text-xl font-bold text-slate-800">田中 太郎</h2>
+                            <p class="text-sm text-slate-500">カフェ・ド・スマイル 渋谷店</p>
+                        </div>
+                    </section>
+                    <section class="bg-white rounded-xl shadow-sm border border-slate-200">
+                        <ul class="divide-y divide-slate-200">
+                            <li class="p-4 flex justify-between items-center cursor-pointer hover:bg-slate-50 transition-colors">
+                                <div class="flex items-center gap-4"><i class="ph-user-circle text-2xl text-slate-500"></i><span class="text-slate-700 font-medium">プロフィール編集</span></div><i class="ph-caret-right text-lg text-slate-400"></i>
+                            </li>
+                             <li class="p-4 flex justify-between items-center cursor-pointer hover:bg-slate-50 transition-colors">
+                                <div class="flex items-center gap-4"><i class="ph-bell text-2xl text-slate-500"></i><span class="text-slate-700 font-medium">通知設定</span></div><i class="ph-caret-right text-lg text-slate-400"></i>
+                            </li>
+                             <li class="p-4 flex justify-between items-center cursor-pointer hover:bg-slate-50 transition-colors">
+                                <div class="flex items-center gap-4"><i class="ph-buildings text-2xl text-slate-500"></i><span class="text-slate-700 font-medium">所属店舗の管理</span></div><i class="ph-caret-right text-lg text-slate-400"></i>
+                            </li>
+                            <li class="p-4 flex justify-between items-center cursor-pointer hover:bg-slate-50 transition-colors">
+                                <div class="flex items-center gap-4"><i class="ph-question text-2xl text-slate-500"></i><span class="text-slate-700 font-medium">ヘルプセンター</span></div><i class="ph-caret-right text-lg text-slate-400"></i>
+                            </li>
+                        </ul>
+                    </section>
+                     <section>
+                         <button onclick="logout()" class="w-full text-center p-4 bg-white rounded-xl shadow-sm border border-slate-200 text-red-500 font-medium hover:bg-red-50 transition-colors">ログアウト</button>
+                    </section>
+                </main>
+            </div>
+        </div>
+
+        <nav class="bg-white/80 backdrop-blur-sm border-t border-slate-200 flex justify-around flex-shrink-0">
+            <button id="nav-home" class="flex-1 flex flex-col items-center py-2 text-slate-400"><i class="ph-house text-2xl"></i><span class="text-xs">ホーム</span></button>
+            <button id="nav-proof" class="flex-1 flex flex-col items-center py-2 text-slate-400"><i class="ph-seal-check text-2xl"></i><span class="text-xs">実績証明</span></button>
+            <button id="nav-reward" class="flex-1 flex flex-col items-center py-2 text-slate-400"><i class="ph-gift text-2xl"></i><span class="text-xs">特典交換</span></button>
+            <button id="nav-scout" class="flex-1 flex flex-col items-center py-2 text-slate-400 relative">
+                <i class="ph-briefcase text-2xl"></i>
+                <span class="text-xs">スカウト</span>
+                <span class="absolute top-1 right-1/2 -translate-y-1/2 translate-x-4 w-2 h-2 bg-sky-500 rounded-full"></span>
+            </button>
+            <button id="nav-mypage" class="flex-1 flex flex-col items-center py-2 text-slate-400"><i class="ph-user text-2xl"></i><span class="text-xs">マイページ</span></button>
+        </nav>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, setDoc, getDoc, serverTimestamp, where, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // Firebase設定
+        const firebaseConfig = {
+            apiKey: "AIzaSyDJnE8H1aY1u4lXehKXteKyZK8K-rkdheM",
+            authDomain: "alba-vote.firebaseapp.com",
+            projectId: "alba-vote",
+            storageBucket: "alba-vote.firebasestorage.app",
+            messagingSenderId: "328123792897",
+            appId: "1:328123792897:web:e64afe636a613d80670a00",
+            measurementId: "G-NSPB3PD75N"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // ユーザーデータ
+        const users = {
+            tanaka: { id: 'tanaka', name: '田中 太郎', avatar: '田', color: 'sky' },
+            suzuki: { id: 'suzuki', name: '鈴木 花子', avatar: '鈴', color: 'purple' },
+            sato: { id: 'sato', name: '佐藤 健', avatar: '佐', color: 'green' }
+        };
+
+        let currentUser = null;
+        let unsubscribeThanks = null;
+        let unsubscribeProof = null; // 実績証明画面用のリスナー
+
+        // カテゴリー名
+        const categoryNames = {
+            responsibility: '責任感',
+            cooperation: '協調性',
+            initiative: '主体性',
+            communication: 'コミュニケーション',
+            improvement: '向上心'
+        };
+
+        // Firestoreにユーザーを初期化
+        async function initializeUsers() {
+            for (const user of Object.values(users)) {
+                const userRef = doc(db, 'users', user.id);
+                const userDoc = await getDoc(userRef);
+                if (!userDoc.exists()) {
+                    await setDoc(userRef, {
+                        name: user.name,
+                        avatar: user.avatar,
+                        color: user.color,
+                        createdAt: serverTimestamp()
+                    });
+                }
+            }
+        }
+
+        // ログイン処理
+        window.loginAsUser = async function(userId) {
+            try {
+                await signInAnonymously(auth);
+                currentUser = users[userId];
+                sessionStorage.setItem('currentUserId', userId);
+                setActiveScreen('home');
+                populateRecipientSelect();
+                startRealtimeUpdates(); // リアルタイム更新開始
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('ログインに失敗しました');
+            }
+        };
+
+        // リアルタイム更新の開始（重要！）
+        function startRealtimeUpdates() {
+            if (unsubscribeThanks) unsubscribeThanks();
+
+            const q = query(collection(db, 'thanks'), orderBy('timestamp', 'desc'));
+            
+            // onSnapshotでリアルタイム監視
+            unsubscribeThanks = onSnapshot(q, (snapshot) => {
+                console.log('リアルタイム更新:', snapshot.size, '件');
+                displayThanksTimeline(snapshot);
+            }, (error) => {
+                console.error('Realtime update error:', error);
+            });
+        }
+
+        // タイムライン表示（リアルタイム対応）
+        function displayThanksTimeline(snapshot) {
+            const timeline = document.getElementById('thanks-timeline');
+            
+            if (snapshot.empty) {
+                timeline.innerHTML = '<p class="text-center text-slate-500 py-8">まだ感謝のメッセージがありません</p>';
+                return;
+            }
+
+            const thanksArray = [];
+            snapshot.forEach((doc) => {
+                thanksArray.push({ id: doc.id, ...doc.data() });
+            });
+
+            timeline.innerHTML = thanksArray.map(thanks => {
+                const evaluations = thanks.evaluations || [{ category: thanks.category, level: thanks.level }];
+                const totalPt = thanks.totalLevel || thanks.level || 0;
+                
+                const tagsHtml = evaluations.map(ev => 
+                    `<span class="text-xs font-semibold text-sky-800 bg-sky-100 px-2 py-0.5 rounded-full">#${categoryNames[ev.category]}: Lv.${ev.level}</span>`
+                ).join('');
+
+                // タイムスタンプの処理
+                const timestamp = thanks.timestamp ? thanks.timestamp.toDate().getTime() : Date.now();
+
+                return `
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 relative">
+                        <div class="absolute top-3 right-3 text-sm font-bold text-amber-600 bg-amber-100 px-2.5 py-1 rounded-full">
+                            +${totalPt} pt
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-${thanks.from.color}-400 to-${thanks.from.color}-600 flex items-center justify-center text-white font-bold">${thanks.from.avatar}</div>
+                            <div class="pr-12 flex-grow">
+                                <p class="text-sm text-slate-500">
+                                    <span class="font-bold text-slate-700">${thanks.from.name}</span> 
+                                    <i class="ph-arrow-right text-xs mx-1"></i> 
+                                    <span class="font-bold text-slate-700">${thanks.to.name}</span>
+                                </p>
+                                <p class="text-slate-800 my-1.5">${thanks.comment || '（コメントなし）'}</p>
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    ${tagsHtml}
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-right text-xs text-slate-400 mt-2">${formatTime(timestamp)}</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 時間フォーマット
+        function formatTime(timestamp) {
+            const diff = Date.now() - timestamp;
+            const hours = Math.floor(diff / 3600000);
+            if (hours < 24) return `${hours}時間前`;
+            return `${Math.floor(hours / 24)}日前`;
+        }
+
+        // 受信者選択の設定
+        function populateRecipientSelect() {
+            const select = document.getElementById('recipient-select');
+            select.innerHTML = '<option value="">誰に送りますか？</option>';
+            Object.values(users).forEach(user => {
+                if (user.id !== currentUser.id) {
+                    const option = document.createElement('option');
+                    option.value = user.id;
+                    option.textContent = user.name;
+                    select.appendChild(option);
+                }
+            });
+        }
+
+        // 画面切り替え
+        function setActiveScreen(screenName) {
+            const screens = ['login', 'home', 'proof', 'reward', 'scout', 'mypage'];
+            const navElement = document.querySelector('nav');
+            const navButtons = {
+                home: document.getElementById('nav-home'),
+                proof: document.getElementById('nav-proof'),
+                reward: document.getElementById('nav-reward'),
+                scout: document.getElementById('nav-scout'),
+                mypage: document.getElementById('nav-mypage')
+            };
+
+            screens.forEach(screen => {
+                const el = document.getElementById(`${screen}-screen`);
+                if (el) el.classList.add('hidden');
+            });
+
+            if (screenName === 'login') {
+                navElement.classList.add('hidden');
+            } else {
+                navElement.classList.remove('hidden');
+                Object.values(navButtons).forEach(btn => {
+                    if (btn) {
+                        btn.classList.remove('text-sky-500');
+                        btn.classList.add('text-slate-400');
+                        btn.querySelector('span').classList.remove('font-bold');
+                    }
+                });
+                if (navButtons[screenName]) {
+                    navButtons[screenName].classList.add('text-sky-500');
+                    navButtons[screenName].classList.remove('text-slate-400');
+                    navButtons[screenName].querySelector('span').classList.add('font-bold');
+                }
+            }
+
+            const currentScreen = document.getElementById(`${screenName}-screen`);
+            if (currentScreen) {
+                currentScreen.classList.remove('hidden');
+                if (screenName === 'proof') {
+                    updateProofScreen();
+                } else if (screenName === 'mypage') {
+                    updateMypage();
+                }
+            }
+        }
+
+        // マイページの更新
+        function updateMypage() {
+            if (!currentUser) return;
+            document.getElementById('mypage-name').textContent = currentUser.name;
+            document.getElementById('mypage-avatar').textContent = currentUser.avatar;
+            
+            // アバターの色を設定
+            const avatar = document.getElementById('mypage-avatar');
+            avatar.className = `w-16 h-16 rounded-full border-2 border-white shadow bg-gradient-to-br from-${currentUser.color}-400 to-${currentUser.color}-600 flex items-center justify-center text-white font-bold text-2xl`;
+        }
+
+        // ログアウト処理
+        window.logout = function() {
+            if (confirm('ログアウトしますか？')) {
+                if (unsubscribeThanks) unsubscribeThanks();
+                if (unsubscribeProof) unsubscribeProof();
+                sessionStorage.removeItem('currentUserId');
+                currentUser = null;
+                setActiveScreen('login');
+            }
+        };
+
+        // 実績証明画面の更新（リアルタイム対応）
+        async function updateProofScreen() {
+            if (!currentUser) return;
+
+            // 既存のリスナーを解除
+            if (unsubscribeProof) unsubscribeProof();
+
+            // リアルタイムリスナーを設定
+            const q = query(collection(db, 'thanks'), where('to.id', '==', currentUser.id));
+            
+            unsubscribeProof = onSnapshot(q, (snapshot) => {
+                console.log('実績証明画面: リアルタイム更新', snapshot.size, '件');
+                
+                const scores = {
+                    responsibility: 0,
+                    cooperation: 0,
+                    initiative: 0,
+                    communication: 0,
+                    improvement: 0
+                };
+                
+                let totalScore = 0;
+                const received = [];
+
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    received.push(data);
+                    
+                    const evaluations = data.evaluations || [{ category: data.category, level: data.level }];
+                    evaluations.forEach(ev => {
+                        scores[ev.category] += ev.level;
+                    });
+                    totalScore += (data.totalLevel || data.level || 0);
+                });
+
+                document.getElementById('proof-name').textContent = currentUser.name;
+                document.getElementById('proof-avatar').textContent = currentUser.avatar;
+                document.getElementById('total-score-display').textContent = totalScore;
+
+                // アバターの色を設定
+                const proofAvatar = document.getElementById('proof-avatar');
+                proofAvatar.className = `w-20 h-20 rounded-full mx-auto mb-3 border-4 border-white shadow-md bg-gradient-to-br from-${currentUser.color}-400 to-${currentUser.color}-600 flex items-center justify-center text-white font-bold text-2xl`;
+
+                // レーダーチャート
+                const maxScore = Math.max(...Object.values(scores), 10);
+                const suggestedMax = Math.ceil(maxScore * 1.2);
+                const stepSize = Math.ceil(suggestedMax / 5);
+
+                const ctx = document.getElementById('radarChart').getContext('2d');
+                const existingChart = Chart.getChart(ctx);
+                if (existingChart) existingChart.destroy();
+
+                new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: Object.values(categoryNames),
+                        datasets: [{
+                            label: '信頼スコア',
+                            data: Object.values(scores),
+                            backgroundColor: 'rgba(14, 165, 233, 0.2)',
+                            borderColor: 'rgba(14, 165, 233, 1)',
+                            pointBackgroundColor: 'rgba(14, 165, 233, 1)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgba(14, 165, 233, 1)'
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        scales: {
+                            r: {
+                                angleLines: { color: '#e2e8f0' },
+                                grid: { color: '#e2e8f0' },
+                                pointLabels: { font: { size: 12, weight: 'bold' }, color: '#475569' },
+                                suggestedMin: 0,
+                                suggestedMax: suggestedMax,
+                                ticks: { 
+                                    backdropColor: 'rgba(255, 255, 255, 0.75)', 
+                                    stepSize: stepSize
+                                }
+                            }
+                        },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+
+                // 評価履歴
+                const history = document.getElementById('evaluation-history');
+                if (received.length === 0) {
+                    history.innerHTML = '<p class="text-center text-slate-500 py-8">まだ評価を受け取っていません</p>';
+                } else {
+                    history.innerHTML = received.slice().reverse().map(t => {
+                        const evaluations = t.evaluations || [{ category: t.category, level: t.level }];
+                        const tagsHtml = evaluations.map(ev => 
+                            `<span class="text-xs font-semibold text-sky-800 bg-sky-100 px-2 py-0.5 rounded-full mr-1">#${categoryNames[ev.category]}: Lv.${ev.level}</span>`
+                        ).join('');
+                        
+                        const timestamp = t.timestamp ? t.timestamp.toDate().getTime() : Date.now();
+                        
+                        return `
+                            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-${t.from.color}-400 to-${t.from.color}-600 flex items-center justify-center text-white font-bold">${t.from.avatar}</div>
+                                    <div class="flex-grow">
+                                        <p class="text-sm text-slate-500">from <span class="font-bold text-slate-700">${t.from.name}</span></p>
+                                        <p class="text-slate-800 my-1.5">${t.comment || '（コメントなし）'}</p>
+                                        <div class="mb-2">${tagsHtml}</div>
+                                        <p class="text-xs text-slate-400">${formatTime(timestamp)}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+            }, (error) => {
+                console.error('実績証明画面: リアルタイム更新エラー', error);
+            });
+        }
+
+        // ナビゲーション
+        document.getElementById('nav-home').addEventListener('click', () => setActiveScreen('home'));
+        document.getElementById('nav-proof').addEventListener('click', () => setActiveScreen('proof'));
+        document.getElementById('nav-reward').addEventListener('click', () => setActiveScreen('reward'));
+        document.getElementById('nav-scout').addEventListener('click', () => setActiveScreen('scout'));
+        document.getElementById('nav-mypage').addEventListener('click', () => setActiveScreen('mypage'));
+
+        // 特典交換タブ
+        const tabCash = document.getElementById('tab-cash');
+        const tabCareer = document.getElementById('tab-career');
+        const contentCash = document.getElementById('content-cash');
+        const contentCareer = document.getElementById('content-career');
+
+        tabCash.addEventListener('click', () => {
+            tabCash.classList.add('border-sky-500', 'text-sky-500');
+            tabCash.classList.remove('border-transparent', 'text-slate-400');
+            tabCareer.classList.add('border-transparent', 'text-slate-400');
+            tabCareer.classList.remove('border-sky-500', 'text-sky-500');
+            contentCash.classList.remove('hidden');
+            contentCareer.classList.add('hidden');
+        });
+
+        tabCareer.addEventListener('click', () => {
+            tabCareer.classList.add('border-sky-500', 'text-sky-500');
+            tabCareer.classList.remove('border-transparent', 'text-slate-400');
+            tabCash.classList.add('border-transparent', 'text-slate-400');
+            tabCash.classList.remove('border-sky-500', 'text-sky-500');
+            contentCareer.classList.remove('hidden');
+            contentCash.classList.add('hidden');
+        });
+
+        // 評価送信ボタンの更新
+        const evaluationSelects = document.querySelectorAll('.evaluation-select');
+        const sendButton = document.getElementById('send-token-button');
+
+        function updateSendButton() {
+            let totalTokens = 0;
+            evaluationSelects.forEach(select => {
+                const level = parseInt(select.value);
+                if (level > 0) totalTokens += level;
+            });
+
+            if (totalTokens > 0) {
+                sendButton.textContent = `${totalTokens} トークンを消費して評価を送る`;
+                sendButton.disabled = false;
+                sendButton.classList.remove('bg-slate-400', 'cursor-not-allowed');
+                sendButton.classList.add('bg-sky-500', 'hover:bg-sky-600');
+            } else {
+                sendButton.textContent = '評価項目を選択してください';
+                sendButton.disabled = true;
+                sendButton.classList.add('bg-slate-400', 'cursor-not-allowed');
+                sendButton.classList.remove('bg-sky-500', 'hover:bg-sky-600');
+            }
+        }
+
+        evaluationSelects.forEach(select => {
+            select.addEventListener('change', updateSendButton);
+        });
+
+        // 送信処理（Firestore）
+        sendButton.addEventListener('click', async () => {
+            const recipientId = document.getElementById('recipient-select').value;
+            const comment = document.getElementById('comment-input').value;
+
+            if (!recipientId) {
+                alert('送り先を選択してください');
+                return;
+            }
+
+            const evaluations = [];
+            let totalLevel = 0;
+            
+            evaluationSelects.forEach(select => {
+                const level = parseInt(select.value);
+                if (level > 0) {
+                    evaluations.push({
+                        category: select.dataset.category,
+                        level: level
+                    });
+                    totalLevel += level;
+                }
+            });
+
+            if (evaluations.length > 0) {
+                try {
+                    await addDoc(collection(db, 'thanks'), {
+                        from: currentUser,
+                        to: users[recipientId],
+                        evaluations: evaluations,
+                        totalLevel: totalLevel,
+                        comment: comment,
+                        timestamp: serverTimestamp()
+                    });
+
+                    alert('✨ 感謝を送りました！他のブラウザでも即座に表示されます');
+                    
+                    // リセット
+                    document.getElementById('recipient-select').value = '';
+                    document.getElementById('comment-input').value = '';
+                    evaluationSelects.forEach(s => s.value = '0');
+                    updateSendButton();
+                } catch (error) {
+                    console.error('Send error:', error);
+                    alert('送信に失敗しました');
+                }
+            }
+        });
+
+        // 情報アイコンのトグル
+        document.querySelectorAll('.info-icon').forEach(icon => {
+            icon.addEventListener('click', function() {
+                const details = this.closest('.evaluation-item').querySelector('.criterion-details');
+                details.classList.toggle('hidden');
+            });
+        });
+
+        // 初期化
+        window.addEventListener('DOMContentLoaded', async () => {
+            await initializeUsers();
+            
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    const savedUserId = sessionStorage.getItem('currentUserId');
+                    if (savedUserId && users[savedUserId]) {
+                        currentUser = users[savedUserId];
+                        setActiveScreen('home');
+                        populateRecipientSelect();
+                        startRealtimeUpdates();
+                    } else {
+                        setActiveScreen('login');
+                    }
+                } else {
+                    setActiveScreen('login');
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
